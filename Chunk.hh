@@ -3,6 +3,8 @@
 
 #include <cstdint>
 
+#include <QOpenGLBuffer>
+
 class Chunk
 {
 public:
@@ -13,9 +15,12 @@ public:
   static constexpr data_type zNum = 8;
 
   Chunk();
+  void render();
 
 private:
-  data_type data[xNum][yNum][zNum];
+  data_type _data[xNum][yNum][zNum];
+
+  QOpenGLBuffer _buffer;
 };
 
 #endif

@@ -10,6 +10,8 @@ FIND_PACKAGE( Qt5Core )
 FIND_PACKAGE( Qt5Gui  )
 FIND_PACKAGE( Qt5OpenGL )
 
+FIND_PACKAGE( OpenGL )
+
 SET( SOURCES
   Chunk.cc
   FileCraft.cc
@@ -23,4 +25,5 @@ TARGET_LINK_LIBRARIES( filecraft
   Qt5::Core
   Qt5::Gui
   Qt5::OpenGL
+  ${OPENGL_LIBRARIES}
 )

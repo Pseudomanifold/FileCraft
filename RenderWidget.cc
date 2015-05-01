@@ -7,6 +7,7 @@ RenderWidget::RenderWidget( QWidget* parent )
 
 void RenderWidget::initializeGL()
 {
+  glClearColor( 0.25f, 0.25f, 0.25f, 1.f );
 }
 
 void RenderWidget::paintGL()
