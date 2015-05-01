@@ -11,6 +11,7 @@ FIND_PACKAGE( Qt5Gui  )
 FIND_PACKAGE( Qt5OpenGL )
 
 SET( SOURCES
+  Chunk.cc
   FileCraft.cc
   MainWindow.cc
   RenderWidget.cc
