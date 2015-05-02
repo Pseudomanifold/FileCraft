@@ -30,6 +30,9 @@ private:
   int _modelViewMatrixLocation;
   int _projectionMatrixLocation;
 
+  QVector3D _lightDirection;
+  int _lightDirectionLocation;
+
   QVector3D _eye;
   QVector3D _centre;
   QVector3D _up;

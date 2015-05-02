@@ -18,6 +18,7 @@ public:
   Chunk();
 
   std::vector<GLfloat> vertices() const;
+  std::vector<GLfloat> normals()  const;
 
 private:
   data_type _data[xNum][yNum][zNum];

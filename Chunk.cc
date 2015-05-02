@@ -40,6 +40,42 @@ std::array<GLfloat,24*3> getSubChunkVertices( GLfloat x, GLfloat y, GLfloat z )
   return vertices;
 }
 
+std::array<GLfloat,24*3> getSubChunkNormals()
+{
+  std::array<GLfloat, 24*3> normals
+    = {
+       {
+         0, 0,-1,
+         0, 0,-1,
+         0, 0,-1,
+         0, 0,-1,
+         1, 0, 0,
+         1, 0, 0,
+         1, 0, 0,
+         1, 0, 0,
+        -1, 0, 0,
+        -1, 0, 0,
+        -1, 0, 0,
+        -1, 0, 0,
+         0, 0, 1,
+         0, 0, 1,
+         0, 0, 1,
+         0, 0, 1,
+         0, 1, 0,
+         0, 1, 0,
+         0, 1, 0,
+         0, 1, 0,
+         0,-1, 0,
+         0,-1, 0,
+         0,-1, 0,
+         0,-1, 0
+       }
+  };
+
+  return normals;
+
+}
+
 } // end of anonymous namespace
 
 Chunk::Chunk()
@@ -85,3 +121,29 @@ std::vector<GLfloat> Chunk::vertices() const
 
   return vertices;
 }
+
+std::vector<GLfloat> Chunk::normals() const
+{
+  std::vector<GLfloat> normals;
+  normals.reserve( xNum * yNum * zNum * 3 );
+
+  for( data_type x = 0; x < xNum; x++ )
+  {
+    for( data_type y = 0; y < yNum; y++ )
+    {
+      for( data_type z = 0; z < zNum; z++ )
+      {
+        if( _data[x][y][z] != 0 )
+        {
+          auto subChunkNormals = getSubChunkNormals();
+
+          normals.insert( std::end( normals ),
+                          std::begin( subChunkNormals ), std::end( subChunkNormals ) );
+        }
+      }
+    }
+  }
+
+  return normals;
+}
+

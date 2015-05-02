@@ -8,22 +8,29 @@
 static const char* vertexShaderSource =
   "#version 130\n"
   "in vec3 position;\n"
+  "in vec3 normal;\n"
   "\n"
   "uniform mat4 modelViewMatrix;\n"
   "uniform mat4 projectionMatrix;\n"
   "\n"
+  "uniform vec3 lightDirection;\n"
+  "varying float diffuseIntensity;\n"
+  "\n"
   "void main()\n"
   "{\n"
-  "  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n"
+  "  gl_Position      = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n"
+  "  diffuseIntensity = dot(normal, lightDirection);\n"
   "}\n";
 
 static const char* fragmentShaderSource =
   "#version 130\n"
   "out vec4 colour;\n"
   "\n"
+  "varying float diffuseIntensity;\n"
+  "\n"
   "void main()"
   "{\n"
-  "  colour = vec4( 1.0, 1.0, 1.0, 1.0 );\n"
+  "  colour = clamp( diffuseIntensity, 0.2f, 1.0f ) * vec4( 1.0, 1.0, 1.0, 1.0 );\n"
   "}\n";
 
 RenderWidget::RenderWidget( QWidget* parent )
@@ -31,6 +38,8 @@ RenderWidget::RenderWidget( QWidget* parent )
   , _shaderProgram( new QOpenGLShaderProgram( this ) )
   , _modelViewMatrixLocation( -1 )
   , _projectionMatrixLocation( -1 )
+  , _lightDirection( {1,1,1} )
+  , _lightDirectionLocation( -1 )
   , _eye(    {10,2,-5} )
   , _centre( { 5,0, 0} )
   , _up(     { 0,1, 0} )
@@ -44,17 +53,22 @@ RenderWidget::RenderWidget( QWidget* parent )
 void RenderWidget::initializeGL()
 {
   glClearColor( 0.25f, 0.25f, 0.25f, 1.f );
+  glEnable( GL_DEPTH_TEST );
 
   _shaderProgram->addShaderFromSourceCode( QOpenGLShader::Vertex, vertexShaderSource );
   _shaderProgram->addShaderFromSourceCode( QOpenGLShader::Fragment, fragmentShaderSource );
 
   _shaderProgram->bindAttributeLocation( "position", 0 );
+  _shaderProgram->bindAttributeLocation( "normal"  , 1 );
 
   _shaderProgram->link();
   _shaderProgram->bind();
 
   _modelViewMatrixLocation  = _shaderProgram->uniformLocation( "modelViewMatrix" );
   _projectionMatrixLocation = _shaderProgram->uniformLocation( "projectionMatrix" );
+
+  _lightDirectionLocation = _shaderProgram->uniformLocation( "lightDirection" );
+  _shaderProgram->setUniformValue( _lightDirectionLocation, _lightDirection );
 
   qDebug() << _shaderProgram->log();
 }
@@ -73,13 +87,19 @@ void RenderWidget::paintGL()
 
   Chunk chunk;
   auto vertices = chunk.vertices();
+  auto normals  = chunk.normals();
 
   _shaderProgram->setAttributeArray( 0, GL_FLOAT, vertices.data(), 3 );
+  _shaderProgram->setAttributeArray( 1, GL_FLOAT, normals.data(),  3 );
+
   _shaderProgram->enableAttributeArray( 0 );
+  _shaderProgram->enableAttributeArray( 1 );
 
   glDrawArrays( GL_QUADS, 0, vertices.size() / 3 );
 
   _shaderProgram->disableAttributeArray( 0 );
+  _shaderProgram->disableAttributeArray( 1 );
+
 
   qDebug() << _shaderProgram->log();
 }
