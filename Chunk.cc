@@ -74,7 +74,7 @@ std::vector<GLfloat> Chunk::vertices() const
       {
         if( _data[x][y][z] != 0 )
         {
-          auto subChunkVertices = getSubChunkVertices( 0, 0, 0 );
+          auto subChunkVertices = getSubChunkVertices( x, y, z );
 
           vertices.insert( std::end( vertices ),
                            std::begin( subChunkVertices ), std::end( subChunkVertices ) );
