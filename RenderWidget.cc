@@ -3,6 +3,7 @@
 
 #include <QDebug>
 #include <QKeyEvent>
+#include <QMouseEvent>
 
 static const char* vertexShaderSource =
   "#version 130\n"
@@ -33,8 +34,11 @@ RenderWidget::RenderWidget( QWidget* parent )
   , _eye(    {10,2,-5} )
   , _centre( { 5,0, 0} )
   , _up(     { 0,1, 0} )
+  , _mouseX( 0 )
+  , _mouseY( 0 )
 {
   this->setFocusPolicy( Qt::StrongFocus );
+  this->setMouseTracking( true );
 }
 
 void RenderWidget::initializeGL()
@@ -126,4 +130,26 @@ void RenderWidget::keyPressEvent( QKeyEvent* event )
   default:
     break;
   }
+}
+
+void RenderWidget::mouseMoveEvent( QMouseEvent* event )
+{
+  auto x = event->x();
+  auto y = event->y();
+
+  auto xDiff = x - _mouseX;
+  auto yDiff = y - _mouseY;
+
+  _centre.setX( _centre.x() - 0.01f*xDiff );
+  _centre.setY( _centre.y() - 0.01f*yDiff );
+
+  _mouseX = this->width() / 2;
+  _mouseY = this->height() / 2;
+
+  this->update();
+
+  QPoint globalPosition = mapToGlobal( QPoint( this->width()  / 2,
+                                               this->height() / 2 ) );
+
+  QCursor::setPos( globalPosition );
 }

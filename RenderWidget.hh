@@ -20,6 +20,7 @@ private:
   virtual void resizeGL( int w, int h );
 
   virtual void keyPressEvent( QKeyEvent* event );
+  virtual void mouseMoveEvent( QMouseEvent* event );
 
   QOpenGLShaderProgram* _shaderProgram;
 
@@ -32,6 +33,9 @@ private:
   QVector3D _eye;
   QVector3D _centre;
   QVector3D _up;
+
+  int _mouseX;
+  int _mouseY;
 };
 
 #endif
