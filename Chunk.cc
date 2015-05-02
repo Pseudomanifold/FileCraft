@@ -49,4 +49,11 @@ void Chunk::render()
     0, 0, 1,
     0, 0, 0,
   };
+
+  _buffer.bind();
+  _buffer.allocate( vertices, 24 * 3 * sizeof(GLfloat) );
+
+  glDrawArrays( GL_QUADS, 0, 24 );
+
+  _buffer.release();
 }
