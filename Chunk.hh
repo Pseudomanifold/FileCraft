@@ -1,9 +1,10 @@
 #ifndef FILECRAFT_CHUNK_HH
 #define FILECRAFT_CHUNK_HH
 
-#include <cstdint>
+#include <GL/gl.h>
 
-#include <QOpenGLBuffer>
+#include <cstdint>
+#include <vector>
 
 class Chunk
 {
@@ -15,12 +16,11 @@ public:
   static constexpr data_type zNum = 8;
 
   Chunk();
-  void render();
+
+  std::vector<GLfloat> vertices() const;
 
 private:
   data_type _data[xNum][yNum][zNum];
-
-  QOpenGLBuffer _buffer;
 };
 
 #endif

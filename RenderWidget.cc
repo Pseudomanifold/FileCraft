@@ -46,38 +46,13 @@ void RenderWidget::paintGL()
 {
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
- GLfloat vertices[] = {
-    0, 0, 0,  // front
-    1, 0, 0,
-    1, 1, 0,
-    0, 1, 0,
-    1, 0, 0,  // right
-    1, 0, 1,
-    1, 1, 1,
-    1, 1, 0,
-    0, 0, 0,  // left
-    0, 0, 1,
-    0, 1, 1,
-    0, 1, 0,
-    0, 0, 1,  // back
-    1, 0, 1,
-    1, 1, 1,
-    0, 1, 1,
-    1, 1, 0,  // top
-    1, 1, 1,
-    0, 1, 1,
-    0, 1, 0,
-    1, 0, 0,  // bottom
-    1, 0, 1,
-    0, 0, 1,
-    0, 0, 0,
-  };
+  Chunk chunk;
+  auto vertices = chunk.vertices();
 
-  _shaderProgram->setAttributeArray( 0, GL_FLOAT, vertices, 3 );
+  _shaderProgram->setAttributeArray( 0, GL_FLOAT, vertices.data(), 3 );
   _shaderProgram->enableAttributeArray( 0 );
 
-  Chunk chunk;
-  chunk.render();
+  glDrawArrays( GL_QUADS, 0, vertices.size() / 3 );
 
   _shaderProgram->disableAttributeArray( 0 );
 
