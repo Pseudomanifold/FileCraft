@@ -14,10 +14,10 @@ std::array<GLfloat,24*3> getSubChunkVertices( GLfloat x, GLfloat y, GLfloat z )
         x+1, y  , z  ,
         x+1, y+1, z  ,
         x  , y+1, z  ,
-        x+1, y  , z  ,  // right
-        x+1, y  , z+1,
+        x+1, y  , z+1,  // right
         x+1, y+1, z+1,
         x+1, y+1, z  ,
+        x+1, y  , z  ,
         x  , y  , z  ,  // left
         x  , y  , z+1,
         x  , y+1, z+1,
@@ -31,9 +31,9 @@ std::array<GLfloat,24*3> getSubChunkVertices( GLfloat x, GLfloat y, GLfloat z )
         x  , y+1, z+1,
         x  , y+1, z  ,
         x+1, y  , z  ,  // bottom
-        x+1, y  , z+1,
+        x  , y  , z,
         x  , y  , z+1,
-        x  , y  , z
+        x+1, y  , z+1
        }
   };
 
