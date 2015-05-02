@@ -2,6 +2,7 @@
 #define FILECRAFT_RENDER_WIDGET_HH
 
 #include <QMatrix4x4>
+#include <QVector3D>
 
 #include <QOpenGLShaderProgram>
 #include <QOpenGLWidget>
@@ -18,6 +19,8 @@ private:
   virtual void paintGL();
   virtual void resizeGL( int w, int h );
 
+  virtual void keyPressEvent( QKeyEvent* event );
+
   QOpenGLShaderProgram* _shaderProgram;
 
   QMatrix4x4 _modelViewMatrix;
@@ -25,6 +28,10 @@ private:
 
   int _modelViewMatrixLocation;
   int _projectionMatrixLocation;
+
+  QVector3D _eye;
+  QVector3D _centre;
+  QVector3D _up;
 };
 
 #endif

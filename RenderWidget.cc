@@ -2,6 +2,7 @@
 #include "Chunk.hh"
 
 #include <QDebug>
+#include <QKeyEvent>
 
 static const char* vertexShaderSource =
   "#version 130\n"
@@ -27,7 +28,13 @@ static const char* fragmentShaderSource =
 RenderWidget::RenderWidget( QWidget* parent )
   : QOpenGLWidget( parent )
   , _shaderProgram( new QOpenGLShaderProgram( this ) )
+  , _modelViewMatrixLocation( -1 )
+  , _projectionMatrixLocation( -1 )
+  , _eye(    {10,2,-5} )
+  , _centre( { 5,0, 0} )
+  , _up(     { 0,1, 0} )
 {
+  this->setFocusPolicy( Qt::StrongFocus );
 }
 
 void RenderWidget::initializeGL()
@@ -53,9 +60,9 @@ void RenderWidget::paintGL()
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
   _modelViewMatrix.setToIdentity();
-  _modelViewMatrix.lookAt( QVector3D( 10,  2, -5 ),
-                           QVector3D(  5,  0,  0 ),
-                           QVector3D(  0,  1,  0 ) );
+  _modelViewMatrix.lookAt( _eye,
+                           _centre,
+                           _up );
 
   _shaderProgram->setUniformValue( _modelViewMatrixLocation, _modelViewMatrix );
   _shaderProgram->setUniformValue( _projectionMatrixLocation, _projectionMatrix );
@@ -77,4 +84,46 @@ void RenderWidget::resizeGL( int w, int h )
 {
   _projectionMatrix.setToIdentity();
   _projectionMatrix.perspective( 45.f, static_cast<GLfloat>( w ) / h, 0.01f, 1000.f );
+}
+
+void RenderWidget::keyPressEvent( QKeyEvent* event )
+{
+  auto direction       = _centre - _eye;
+  auto strafeDirection = QVector3D::crossProduct( direction, _up );
+  auto speed           = 0.1f;
+
+  switch( event->key() )
+  {
+  case Qt::Key_W:
+    qDebug() << "Forward";
+    _eye    += speed*direction;
+    _centre += speed*direction;
+
+    this->update();
+    break;
+  case Qt::Key_S:
+    qDebug() << "Backward";
+    _eye    -= speed*direction;
+    _centre -= speed*direction;
+
+    this->update();
+    break;
+  case Qt::Key_A:
+    qDebug() << "Strafe left";
+    _eye    -= speed*strafeDirection;
+    _centre -= speed*strafeDirection;
+
+    this->update();
+    break;
+
+  case Qt::Key_D:
+    qDebug() << "Strafe right";
+    _eye    += speed*strafeDirection;
+    _centre += speed*strafeDirection;
+
+    this->update();
+    break;
+  default:
+    break;
+  }
 }
