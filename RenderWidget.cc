@@ -48,6 +48,7 @@ RenderWidget::RenderWidget( QWidget* parent )
   , _mouseX( 0 )
   , _mouseY( 0 )
 {
+  this->setCursor( Qt::BlankCursor );
   this->setFocusPolicy( Qt::StrongFocus );
   this->setMouseTracking( true );
 }
