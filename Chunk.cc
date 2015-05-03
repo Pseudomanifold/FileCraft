@@ -76,12 +76,50 @@ std::array<GLfloat,24*3> getSubChunkNormals()
   };
 
   return normals;
+}
 
+std::array<GLfloat,24*3> getSubChunkColours( unsigned int type )
+{
+  std::array<GLfloat, 24*3> colours;
+
+  GLfloat r = 0.f;
+  GLfloat g = 0.f;
+  GLfloat b = 0.f;
+
+  switch( type )
+  {
+  // green terrain
+  case 1:
+    r = 0.05f; g = 0.50f; b = 0.05f;
+    break;
+
+  // brown terrain
+  case 2:
+    r = 0.75f; g = 0.25f; b = 0.05f;
+    break;
+
+  // blue terrain
+  case 3:
+    r = 0.30f; g = 0.40f; b = 1.00f;
+
+  default:
+      break;
+  }
+
+  for( unsigned int i = 0; i < 24; i += 3 )
+  {
+    colours[i  ] = r;
+    colours[i+1] = g;
+    colours[i+2] = b;
+  }
+
+  return colours;
 }
 
 } // end of anonymous namespace
 
 Chunk::Chunk()
+  : _updateRequired( true )
 {
   for( data_type x = 0; x < xNum; x++ )
     for( data_type y = 0; y < yNum; y++ )
@@ -102,10 +140,54 @@ Chunk::data_type& Chunk::operator()( unsigned int x, unsigned int y, unsigned in
   return const_cast<Chunk::data_type&>( static_cast<const Chunk&>( *this ).operator()( x, y, z ) );
 }
 
-std::vector<GLfloat> Chunk::vertices() const
+const std::vector<GLfloat>& Chunk::vertices() const
 {
-  std::vector<GLfloat> vertices;
-  vertices.reserve( xNum * yNum * zNum * 3 );
+  if( _updateRequired )
+    this->update();
+
+  return _vertices;
+}
+
+const std::vector<GLfloat>& Chunk::normals() const
+{
+  if( _updateRequired )
+    this->update();
+
+  return _normals;
+}
+
+const std::vector<GLfloat>& Chunk::colours() const
+{
+  if( _updateRequired )
+    this->update();
+
+  return _colours;
+}
+
+bool Chunk::isOccupied( int x, int y, int z ) const
+{
+  if( x < 0 || x >= xNum )
+    return false;
+
+  if( y < 0 || y >= yNum )
+    return false;
+
+  if( z < 0 || z >= zNum )
+    return false;
+
+  return _data[x][y][z] != 0;
+}
+
+void Chunk::update() const
+{
+  _vertices.clear();
+  _vertices.reserve( xNum * yNum * zNum * 3 );
+
+  _normals.clear();
+  _normals.reserve( xNum * yNum * zNum * 3 );
+
+  _colours.clear();
+  _colours.reserve( xNum * yNum * zNum * 3 );
 
   for( data_type x = 0; x < xNum; x++ )
   {
@@ -115,89 +197,24 @@ std::vector<GLfloat> Chunk::vertices() const
       {
         if( _data[x][y][z] != 0 )
         {
-          auto subChunkVertices = getSubChunkVertices( x, y, z );
+          auto&& subChunkVertices = getSubChunkVertices( x, y, z );
 
-          vertices.insert( std::end( vertices ),
-                           std::begin( subChunkVertices ), std::end( subChunkVertices ) );
+          _vertices.insert( std::end( _vertices ),
+                            std::begin( subChunkVertices ), std::end( subChunkVertices ) );
+
+          auto&& subChunkNormals = getSubChunkNormals();
+
+          _normals.insert( std::end( _normals ),
+                           std::begin( subChunkNormals ), std::end( subChunkNormals ) );
+
+          auto&& subChunkColours = getSubChunkColours( _data[x][y][z] );
+
+          _colours.insert( std::end( _colours ),
+                           std::begin( subChunkColours ), std::end( subChunkColours ) );
         }
       }
     }
   }
 
-  return vertices;
-}
-
-std::vector<GLfloat> Chunk::normals() const
-{
-  std::vector<GLfloat> normals;
-  normals.reserve( xNum * yNum * zNum * 3 );
-
-  for( data_type x = 0; x < xNum; x++ )
-  {
-    for( data_type y = 0; y < yNum; y++ )
-    {
-      for( data_type z = 0; z < zNum; z++ )
-      {
-        if( _data[x][y][z] != 0 )
-        {
-          auto subChunkNormals = getSubChunkNormals();
-
-          normals.insert( std::end( normals ),
-                          std::begin( subChunkNormals ), std::end( subChunkNormals ) );
-        }
-      }
-    }
-  }
-
-  return normals;
-}
-
-std::vector<GLfloat> Chunk::colours() const
-{
-  std::vector<GLfloat> colours;
-  colours.reserve( xNum * yNum * zNum * 3 );
-
-  for( data_type x = 0; x < xNum; x++ )
-  {
-    for( data_type y = 0; y < yNum; y++ )
-    {
-      for( data_type z = 0; z < zNum; z++ )
-      {
-        if( _data[x][y][z] == 0 )
-          continue;
-
-        GLfloat r = 1.f;
-        GLfloat g = 0.f;
-        GLfloat b = 0.f;
-
-        switch( _data[x][y][z] )
-        {
-        // green terrain
-        case 1:
-          r = 0.05f; g = 0.50f; b = 0.05f;
-          break;
-
-        // brown terrain
-        case 2:
-          r = 0.75f; g = 0.25f; b = 0.05f;
-          break;
-
-        // blue terrain
-        case 3:
-          r = 0.30f; g = 0.40f; b = 1.00f;
-        default:
-          break;
-        }
-
-        for( unsigned int i = 0; i < 24; i++ )
-        {
-          colours.push_back( r );
-          colours.push_back( g );
-          colours.push_back( b );
-        }
-      }
-    }
-  }
-
-  return colours;
+  _updateRequired = false;
 }

@@ -20,12 +20,21 @@ public:
   const data_type& operator()( unsigned int x, unsigned int y, unsigned int z ) const;
         data_type& operator()( unsigned int x, unsigned int y, unsigned int z );
 
-  std::vector<GLfloat> vertices() const;
-  std::vector<GLfloat> normals()  const;
-  std::vector<GLfloat> colours()  const;
+  const std::vector<GLfloat>& vertices() const;
+  const std::vector<GLfloat>& normals()  const;
+  const std::vector<GLfloat>& colours()  const;
 
 private:
   data_type _data[xNum][yNum][zNum];
+
+  mutable bool _updateRequired;
+
+  mutable std::vector<GLfloat> _vertices;
+  mutable std::vector<GLfloat> _normals;
+  mutable std::vector<GLfloat> _colours;
+
+  bool isOccupied( int x, int y, int z ) const;
+  void update() const;
 };
 
 #endif
