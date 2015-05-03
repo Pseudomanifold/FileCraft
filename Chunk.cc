@@ -88,10 +88,17 @@ Chunk::Chunk()
     {
       for( data_type z = 0; z < zNum; z++ )
       {
-        if( std::abs( simplexNoise( 1, x, y, z ) ) > 0.2f )
-          _data[x][y][z] = 1;
-        else
-          _data[x][y][z] = 0;
+        auto noise     = std::abs( simplexNoise( 1, x,y,z ) );
+        data_type type = 0;
+
+        if( noise > 0.75f )
+          type = 3;
+        else if( noise > 0.40f )
+          type = 2;
+        else if( noise > 0.30f )
+          type = 1;
+
+        _data[x][y][z] = type;
       }
     }
   }
@@ -175,6 +182,7 @@ std::vector<GLfloat> Chunk::colours() const
         // brown terrain
         case 2:
           r = 0.75f; g = 0.25f; b = 0.05f;
+          break;
 
         // blue terrain
         case 3:
