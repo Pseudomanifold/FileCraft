@@ -17,6 +17,7 @@ SET( SOURCES
   FileCraft.cc
   MainWindow.cc
   RenderWidget.cc
+  SimplexNoise.cc
 )
 
 ADD_EXECUTABLE( filecraft ${SOURCES} )
