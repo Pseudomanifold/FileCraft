@@ -17,6 +17,9 @@ public:
 
   Chunk();
 
+  const data_type& operator()( unsigned int x, unsigned int y, unsigned int z ) const;
+        data_type& operator()( unsigned int x, unsigned int y, unsigned int z );
+
   std::vector<GLfloat> vertices() const;
   std::vector<GLfloat> normals()  const;
   std::vector<GLfloat> colours()  const;

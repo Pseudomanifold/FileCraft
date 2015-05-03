@@ -2,6 +2,8 @@
 #include "SimplexNoise.hh"
 
 #include <array>
+#include <stdexcept>
+
 #include <cmath>
 
 namespace
@@ -102,6 +104,19 @@ Chunk::Chunk()
       }
     }
   }
+}
+
+const Chunk::data_type& Chunk::operator()( unsigned int x, unsigned int y, unsigned int z ) const
+{
+  if( x >= xNum || y >= yNum || z >= zNum )
+    throw std::runtime_error( "Attempting to access invalid index" );
+
+  return _data[x][y][z];
+}
+
+Chunk::data_type& Chunk::operator()( unsigned int x, unsigned int y, unsigned int z )
+{
+  return const_cast<Chunk::data_type&>( static_cast<const Chunk&>( *this ).operator()( x, y, z ) );
 }
 
 std::vector<GLfloat> Chunk::vertices() const
