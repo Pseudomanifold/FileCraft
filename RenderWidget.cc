@@ -11,6 +11,9 @@ static const char* vertexShaderSource =
   "#version 130\n"
   "in vec3 position;\n"
   "in vec3 normal;\n"
+  "in vec3 colour;\n"
+  "\n"
+  "out vec3 vertexColour;\n"
   "\n"
   "uniform mat4 modelViewMatrix;\n"
   "uniform mat4 projectionMatrix;\n"
@@ -22,17 +25,20 @@ static const char* vertexShaderSource =
   "{\n"
   "  gl_Position      = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n"
   "  diffuseIntensity = dot(normal, lightDirection);\n"
+  "  vertexColour     = colour;\n"
   "}\n";
 
 static const char* fragmentShaderSource =
   "#version 130\n"
+  "in vec3 vertexColour;\n"
+  "\n"
   "out vec4 colour;\n"
   "\n"
   "varying float diffuseIntensity;\n"
   "\n"
   "void main()"
   "{\n"
-  "  colour = clamp( diffuseIntensity, 0.2f, 1.0f ) * vec4( 1.0, 1.0, 1.0, 1.0 );\n"
+  "  colour = clamp( diffuseIntensity, 0.2f, 1.0f ) * vec4( vertexColour, 1.0 );\n"
   "}\n";
 
 RenderWidget::RenderWidget( QWidget* parent )
@@ -40,7 +46,7 @@ RenderWidget::RenderWidget( QWidget* parent )
   , _shaderProgram( new QOpenGLShaderProgram( this ) )
   , _modelViewMatrixLocation( -1 )
   , _projectionMatrixLocation( -1 )
-  , _lightDirection( {0.58,0.58,0.58} )
+  , _lightDirection( {1.0,1.0,1.0} )
   , _lightDirectionLocation( -1 )
   , _eye(       { 0,0.5, 5} )
   , _direction( { 0,0,-1} )
@@ -64,6 +70,7 @@ void RenderWidget::initializeGL()
 
   _shaderProgram->bindAttributeLocation( "position", 0 );
   _shaderProgram->bindAttributeLocation( "normal"  , 1 );
+  _shaderProgram->bindAttributeLocation( "colour"  , 2 );
 
   _shaderProgram->link();
   _shaderProgram->bind();
@@ -90,22 +97,24 @@ void RenderWidget::paintGL()
   _shaderProgram->setUniformValue( _projectionMatrixLocation, _projectionMatrix );
 
   Chunk chunk;
+
   auto vertices = chunk.vertices();
   auto normals  = chunk.normals();
+  auto colours  = chunk.colours();
 
   _shaderProgram->setAttributeArray( 0, GL_FLOAT, vertices.data(), 3 );
   _shaderProgram->setAttributeArray( 1, GL_FLOAT, normals.data(),  3 );
+  _shaderProgram->setAttributeArray( 2, GL_FLOAT, colours.data(),  3 );
 
   _shaderProgram->enableAttributeArray( 0 );
   _shaderProgram->enableAttributeArray( 1 );
+  _shaderProgram->enableAttributeArray( 2 );
 
   glDrawArrays( GL_QUADS, 0, vertices.size() / 3 );
 
-  _shaderProgram->disableAttributeArray( 0 );
+  _shaderProgram->disableAttributeArray( 2 );
   _shaderProgram->disableAttributeArray( 1 );
-
-
-  qDebug() << _shaderProgram->log();
+  _shaderProgram->disableAttributeArray( 0 );
 }
 
 void RenderWidget::resizeGL( int w, int h )

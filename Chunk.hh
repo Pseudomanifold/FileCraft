@@ -19,6 +19,7 @@ public:
 
   std::vector<GLfloat> vertices() const;
   std::vector<GLfloat> normals()  const;
+  std::vector<GLfloat> colours()  const;
 
 private:
   data_type _data[xNum][yNum][zNum];

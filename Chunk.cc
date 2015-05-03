@@ -147,3 +147,51 @@ std::vector<GLfloat> Chunk::normals() const
   return normals;
 }
 
+std::vector<GLfloat> Chunk::colours() const
+{
+  std::vector<GLfloat> colours;
+  colours.reserve( xNum * yNum * zNum * 3 );
+
+  for( data_type x = 0; x < xNum; x++ )
+  {
+    for( data_type y = 0; y < yNum; y++ )
+    {
+      for( data_type z = 0; z < zNum; z++ )
+      {
+        if( _data[x][y][z] == 0 )
+          continue;
+
+        GLfloat r = 1.f;
+        GLfloat g = 0.f;
+        GLfloat b = 0.f;
+
+        switch( _data[x][y][z] )
+        {
+        // green terrain
+        case 1:
+          r = 0.05f; g = 0.50f; b = 0.05f;
+          break;
+
+        // brown terrain
+        case 2:
+          r = 0.75f; g = 0.25f; b = 0.05f;
+
+        // blue terrain
+        case 3:
+          r = 0.30f; g = 0.40f; b = 1.00f;
+        default:
+          break;
+        }
+
+        for( unsigned int i = 0; i < 24; i++ )
+        {
+          colours.push_back( r );
+          colours.push_back( g );
+          colours.push_back( b );
+        }
+      }
+    }
+  }
+
+  return colours;
+}
