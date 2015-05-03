@@ -18,6 +18,7 @@ SET( SOURCES
   MainWindow.cc
   RenderWidget.cc
   SimplexNoise.cc
+  TerrainGenerator.cc
 )
 
 ADD_EXECUTABLE( filecraft ${SOURCES} )

@@ -1,5 +1,4 @@
 #include "Chunk.hh"
-#include "SimplexNoise.hh"
 
 #include <array>
 #include <stdexcept>
@@ -85,25 +84,9 @@ std::array<GLfloat,24*3> getSubChunkNormals()
 Chunk::Chunk()
 {
   for( data_type x = 0; x < xNum; x++ )
-  {
     for( data_type y = 0; y < yNum; y++ )
-    {
       for( data_type z = 0; z < zNum; z++ )
-      {
-        auto noise     = std::abs( simplexNoise( 1, x,y,z ) );
-        data_type type = 0;
-
-        if( noise > 0.75f )
-          type = 3;
-        else if( noise > 0.40f )
-          type = 2;
-        else if( noise > 0.30f )
-          type = 1;
-
-        _data[x][y][z] = type;
-      }
-    }
-  }
+        _data[x][y][z] = 0;
 }
 
 const Chunk::data_type& Chunk::operator()( unsigned int x, unsigned int y, unsigned int z ) const

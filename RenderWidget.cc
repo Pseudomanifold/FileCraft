@@ -1,5 +1,7 @@
 #include "RenderWidget.hh"
+
 #include "Chunk.hh"
+#include "TerrainGenerator.hh"
 
 #include <cmath>
 
@@ -96,8 +98,7 @@ void RenderWidget::paintGL()
   _shaderProgram->setUniformValue( _modelViewMatrixLocation, _modelViewMatrix );
   _shaderProgram->setUniformValue( _projectionMatrixLocation, _projectionMatrix );
 
-  Chunk chunk;
-
+  Chunk chunk   = makePeak();
   auto vertices = chunk.vertices();
   auto normals  = chunk.normals();
   auto colours  = chunk.colours();
