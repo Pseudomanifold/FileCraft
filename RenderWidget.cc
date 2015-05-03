@@ -17,7 +17,8 @@ static const char* vertexShaderSource =
   "\n"
   "out vec3 vertexColour;\n"
   "\n"
-  "uniform mat4 modelViewMatrix;\n"
+  "uniform mat4 modelMatrix;\n"
+  "uniform mat4 viewMatrix;\n"
   "uniform mat4 projectionMatrix;\n"
   "\n"
   "uniform vec3 lightDirection;\n"
@@ -25,7 +26,7 @@ static const char* vertexShaderSource =
   "\n"
   "void main()\n"
   "{\n"
-  "  gl_Position      = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n"
+  "  gl_Position      = projectionMatrix * viewMatrix * modelMatrix * vec4( position, 1.0 );\n"
   "  diffuseIntensity = dot(normal, lightDirection);\n"
   "  vertexColour     = colour;\n"
   "}\n";
@@ -46,7 +47,8 @@ static const char* fragmentShaderSource =
 RenderWidget::RenderWidget( QWidget* parent )
   : QOpenGLWidget( parent )
   , _shaderProgram( new QOpenGLShaderProgram( this ) )
-  , _modelViewMatrixLocation( -1 )
+  , _modelMatrixLocation( -1 )
+  , _viewMatrixLocation( -1 )
   , _projectionMatrixLocation( -1 )
   , _lightDirection( {1.0,1.0,1.0} )
   , _lightDirectionLocation( -1 )
@@ -77,7 +79,8 @@ void RenderWidget::initializeGL()
   _shaderProgram->link();
   _shaderProgram->bind();
 
-  _modelViewMatrixLocation  = _shaderProgram->uniformLocation( "modelViewMatrix" );
+  _modelMatrixLocation      = _shaderProgram->uniformLocation( "modelMatrix" );
+  _viewMatrixLocation       = _shaderProgram->uniformLocation( "viewMatrix" );
   _projectionMatrixLocation = _shaderProgram->uniformLocation( "projectionMatrix" );
 
   _lightDirectionLocation = _shaderProgram->uniformLocation( "lightDirection" );
@@ -90,12 +93,13 @@ void RenderWidget::paintGL()
 {
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-  _modelViewMatrix.setToIdentity();
-  _modelViewMatrix.lookAt( _eye,
-                           _eye + _direction,
-                           _up );
+  _viewMatrix.setToIdentity();
+  _viewMatrix.lookAt( _eye,
+                      _eye + _direction,
+                      _up );
 
-  _shaderProgram->setUniformValue( _modelViewMatrixLocation, _modelViewMatrix );
+  _shaderProgram->setUniformValue( _modelMatrixLocation,      _modelMatrix );
+  _shaderProgram->setUniformValue( _viewMatrixLocation,       _viewMatrix );
   _shaderProgram->setUniformValue( _projectionMatrixLocation, _projectionMatrix );
 
   Chunk chunk   = makePeak();

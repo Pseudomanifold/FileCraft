@@ -24,10 +24,12 @@ private:
 
   QOpenGLShaderProgram* _shaderProgram;
 
-  QMatrix4x4 _modelViewMatrix;
+  QMatrix4x4 _modelMatrix;
+  QMatrix4x4 _viewMatrix;
   QMatrix4x4 _projectionMatrix;
 
-  int _modelViewMatrixLocation;
+  int _modelMatrixLocation;
+  int _viewMatrixLocation;
   int _projectionMatrixLocation;
 
   QVector3D _lightDirection;
