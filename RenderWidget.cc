@@ -1,6 +1,4 @@
 #include "RenderWidget.hh"
-
-#include "Chunk.hh"
 #include "TerrainGenerator.hh"
 
 #include <cmath>
@@ -61,6 +59,10 @@ RenderWidget::RenderWidget( QWidget* parent )
   this->setCursor( Qt::BlankCursor );
   this->setFocusPolicy( Qt::StrongFocus );
   this->setMouseTracking( true );
+
+  for( int i = 0; i < 10; i++ )
+    for( int j = 0; j < 10; j++ )
+      _chunks[i][j] = makePeak();
 }
 
 void RenderWidget::initializeGL()
@@ -102,24 +104,34 @@ void RenderWidget::paintGL()
   _shaderProgram->setUniformValue( _viewMatrixLocation,       _viewMatrix );
   _shaderProgram->setUniformValue( _projectionMatrixLocation, _projectionMatrix );
 
-  Chunk chunk   = makePeak();
-  auto vertices = chunk.vertices();
-  auto normals  = chunk.normals();
-  auto colours  = chunk.colours();
+  for( unsigned int i = 0; i < 10; i++ )
+  {
+    for( unsigned int j = 0; j < 10; j++ )
+    {
+      _modelMatrix.setToIdentity();
+      _modelMatrix.translate( i * Chunk::xNum, 0.f, j * Chunk::zNum );
 
-  _shaderProgram->setAttributeArray( 0, GL_FLOAT, vertices.data(), 3 );
-  _shaderProgram->setAttributeArray( 1, GL_FLOAT, normals.data(),  3 );
-  _shaderProgram->setAttributeArray( 2, GL_FLOAT, colours.data(),  3 );
+      _shaderProgram->setUniformValue( _modelMatrixLocation, _modelMatrix );
 
-  _shaderProgram->enableAttributeArray( 0 );
-  _shaderProgram->enableAttributeArray( 1 );
-  _shaderProgram->enableAttributeArray( 2 );
+      auto&& vertices = _chunks[i][j].vertices();
+      auto&& normals  = _chunks[i][j].normals();
+      auto&& colours  = _chunks[i][j].colours();
 
-  glDrawArrays( GL_QUADS, 0, vertices.size() / 3 );
+      _shaderProgram->setAttributeArray( 0, GL_FLOAT, vertices.data(), 3 );
+      _shaderProgram->setAttributeArray( 1, GL_FLOAT, normals.data(),  3 );
+      _shaderProgram->setAttributeArray( 2, GL_FLOAT, colours.data(),  3 );
 
-  _shaderProgram->disableAttributeArray( 2 );
-  _shaderProgram->disableAttributeArray( 1 );
-  _shaderProgram->disableAttributeArray( 0 );
+      _shaderProgram->enableAttributeArray( 0 );
+      _shaderProgram->enableAttributeArray( 1 );
+      _shaderProgram->enableAttributeArray( 2 );
+
+      glDrawArrays( GL_QUADS, 0, vertices.size() / 3 );
+
+      _shaderProgram->disableAttributeArray( 2 );
+      _shaderProgram->disableAttributeArray( 1 );
+      _shaderProgram->disableAttributeArray( 0 );
+    }
+  }
 }
 
 void RenderWidget::resizeGL( int w, int h )

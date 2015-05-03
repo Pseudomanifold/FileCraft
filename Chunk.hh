@@ -11,9 +11,9 @@ class Chunk
 public:
   using data_type = std::uint8_t;
 
-  static constexpr data_type xNum = 8;
-  static constexpr data_type yNum = 8;
-  static constexpr data_type zNum = 8;
+  static constexpr data_type xNum = 16;
+  static constexpr data_type yNum = 16;
+  static constexpr data_type zNum = 16;
 
   Chunk();
 

@@ -7,6 +7,8 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLWidget>
 
+#include "Chunk.hh"
+
 class RenderWidget : public QOpenGLWidget
 {
   Q_OBJECT
@@ -41,6 +43,10 @@ private:
 
   int _mouseX;
   int _mouseY;
+
+  // FIXME: This is not the right place to manage a world of chunks, but at
+  // least I can pretend to have a working level implementation that way...
+  Chunk _chunks[10][10];
 };
 
 #endif
