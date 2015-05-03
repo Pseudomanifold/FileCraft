@@ -61,8 +61,15 @@ RenderWidget::RenderWidget( QWidget* parent )
   this->setMouseTracking( true );
 
   for( int i = 0; i < 10; i++ )
+  {
     for( int j = 0; j < 10; j++ )
-      _chunks[i][j] = makePeak();
+    {
+      if( i == 0 || j == 0 || i == 9 || j == 9 )
+        _chunks[i][j] = makePeak();
+      else
+        _chunks[i][j] = makeRandom();
+    }
+  }
 }
 
 void RenderWidget::initializeGL()

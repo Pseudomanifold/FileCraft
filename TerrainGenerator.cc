@@ -2,6 +2,15 @@
 
 #include "Chunk.hh"
 
+#include <random>
+
+namespace
+{
+
+static std::random_device rd;
+
+} // end of anonymous namespace
+
 Chunk makePeak()
 {
   Chunk peak;
@@ -22,5 +31,25 @@ Chunk makePeak()
 
 Chunk makePeaks( unsigned int numPeaks )
 {
+  // FIXME: Not yet implemented :-)
   return Chunk();
+}
+
+Chunk makeRandom()
+{
+  std::mt19937 rng( rd() );
+  std::uniform_int_distribution<unsigned int> distribution( 0, 3);
+
+  Chunk chunk;
+
+  auto xDim = chunk.xNum;
+  auto yDim = chunk.yNum;
+  auto zDim = chunk.zNum;
+
+  for( decltype(xDim) x = 0; x < xDim; x++ )
+    for( decltype(yDim) y = 0; y < yDim; y++ )
+      for( decltype(zDim) z = y; z < zDim; z++ )
+        chunk(x,y,z) = distribution( rng );
+
+  return chunk;
 }
