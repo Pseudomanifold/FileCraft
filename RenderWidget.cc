@@ -1,6 +1,8 @@
 #include "RenderWidget.hh"
 #include "Chunk.hh"
 
+#include <cmath>
+
 #include <QDebug>
 #include <QKeyEvent>
 #include <QMouseEvent>
@@ -40,9 +42,9 @@ RenderWidget::RenderWidget( QWidget* parent )
   , _projectionMatrixLocation( -1 )
   , _lightDirection( {0.58,0.58,0.58} )
   , _lightDirectionLocation( -1 )
-  , _eye(    {10,2,-5} )
-  , _centre( { 5,0, 0} )
-  , _up(     { 0,1, 0} )
+  , _eye(       { 0,0.5, 5} )
+  , _direction( { 0,0,-1} )
+  , _up(        { 0,1, 0} )
   , _mouseX( 0 )
   , _mouseY( 0 )
 {
@@ -80,7 +82,7 @@ void RenderWidget::paintGL()
 
   _modelViewMatrix.setToIdentity();
   _modelViewMatrix.lookAt( _eye,
-                           _centre,
+                           _eye + _direction,
                            _up );
 
   _shaderProgram->setUniformValue( _modelViewMatrixLocation, _modelViewMatrix );
@@ -113,7 +115,7 @@ void RenderWidget::resizeGL( int w, int h )
 
 void RenderWidget::keyPressEvent( QKeyEvent* event )
 {
-  auto direction       = _centre - _eye;
+  auto direction       = _direction;
   auto strafeDirection = QVector3D::crossProduct( direction, _up );
   auto speed           = 0.1f;
 
@@ -122,30 +124,22 @@ void RenderWidget::keyPressEvent( QKeyEvent* event )
   case Qt::Key_W:
     qDebug() << "Forward";
     _eye    += speed*direction;
-    _centre += speed*direction;
-
     this->update();
     break;
   case Qt::Key_S:
     qDebug() << "Backward";
     _eye    -= speed*direction;
-    _centre -= speed*direction;
-
     this->update();
     break;
   case Qt::Key_A:
     qDebug() << "Strafe left";
     _eye    -= speed*strafeDirection;
-    _centre -= speed*strafeDirection;
-
     this->update();
     break;
 
   case Qt::Key_D:
     qDebug() << "Strafe right";
     _eye    += speed*strafeDirection;
-    _centre += speed*strafeDirection;
-
     this->update();
     break;
   default:
@@ -161,8 +155,21 @@ void RenderWidget::mouseMoveEvent( QMouseEvent* event )
   auto xDiff = x - _mouseX;
   auto yDiff = y - _mouseY;
 
-  _centre.setX( _centre.x() - 0.01f*xDiff );
-  _centre.setY( _centre.y() - 0.01f*yDiff );
+  auto theta = std::acos ( _direction.y() / _direction.length() );
+  auto phi   = std::atan2( _direction.z(), _direction.x() );
+  auto speed = 0.001f;
+
+  phi   += speed*xDiff;
+  theta += speed*yDiff;
+
+  if( theta > 0.75*M_PI)
+    theta = 0.75*M_PI;
+  else if( theta < 0.25*M_PI )
+    theta = 0.25*M_PI;
+
+  _direction.setX( std::sin( theta ) * std::cos( phi ) );
+  _direction.setY( std::cos( theta ) );
+  _direction.setZ( std::sin( theta ) * std::sin( phi ) );
 
   _mouseX = this->width() / 2;
   _mouseY = this->height() / 2;

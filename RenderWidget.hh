@@ -34,7 +34,7 @@ private:
   int _lightDirectionLocation;
 
   QVector3D _eye;
-  QVector3D _centre;
+  QVector3D _direction;
   QVector3D _up;
 
   int _mouseX;
