@@ -10,30 +10,30 @@ std::array<GLfloat,24*3> getSubChunkVertices( GLfloat x, GLfloat y, GLfloat z )
   std::array<GLfloat, 24*3> vertices
     = {
        {
-        x  , y  , z  ,  // front
+        x  , y  , z  , // front
         x+1, y  , z  ,
         x+1, y+1, z  ,
         x  , y+1, z  ,
-        x+1, y  , z+1,  // right
-        x+1, y+1, z+1,
+        x,   y  , z-1, // back
+        x,   y+1, z-1,
+        x+1, y+1, z-1,
+        x+1, y  , z-1,
+        x,   y  , z  , // left
+        x,   y+1, z  ,
+        x,   y+1, z-1,
+        x,   y  , z-1,
+        x+1, y,   z  , // right
+        x+1, y,   z-1,
+        x+1, y+1, z-1,
         x+1, y+1, z  ,
-        x+1, y  , z  ,
-        x  , y  , z  ,  // left
-        x  , y  , z+1,
-        x  , y+1, z+1,
-        x  , y+1, z  ,
-        x  , y  , z+1,  // back
-        x+1, y  , z+1,
-        x+1, y+1, z+1,
-        x  , y+1, z+1,
-        x+1, y+1, z  ,  // top
-        x+1, y+1, z+1,
-        x  , y+1, z+1,
-        x  , y+1, z  ,
-        x+1, y  , z  ,  // bottom
-        x  , y  , z,
-        x  , y  , z+1,
-        x+1, y  , z+1
+        x,   y+1, z  , // top
+        x+1, y+1, z  ,
+        x+1, y+1, z-1,
+        x  , y+1, z-1,
+        x,   y,   z  , // bottom
+        x,   y,   z-1,
+        x+1, y,   z-1,
+        x+1, y,   z
        }
   };
 
@@ -45,27 +45,27 @@ std::array<GLfloat,24*3> getSubChunkNormals()
   std::array<GLfloat, 24*3> normals
     = {
        {
-         0, 0,-1,
-         0, 0,-1,
-         0, 0,-1,
-         0, 0,-1,
-         1, 0, 0,
-         1, 0, 0,
-         1, 0, 0,
-         1, 0, 0,
-        -1, 0, 0,
-        -1, 0, 0,
-        -1, 0, 0,
-        -1, 0, 0,
+         0, 0, 1, // front
          0, 0, 1,
          0, 0, 1,
          0, 0, 1,
-         0, 0, 1,
+         0, 0,-1, // back
+         0, 0,-1,
+         0, 0,-1,
+         0, 0,-1,
+        -1, 0, 0, // left
+        -1, 0, 0,
+        -1, 0, 0,
+        -1, 0, 0,
+         1, 0, 0, // right
+         1, 0, 0,
+         1, 0, 0,
+         1, 0, 0,
+         0, 1, 0, // top
          0, 1, 0,
          0, 1, 0,
          0, 1, 0,
-         0, 1, 0,
-         0,-1, 0,
+         0,-1, 0, // bottom
          0,-1, 0,
          0,-1, 0,
          0,-1, 0

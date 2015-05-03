@@ -38,7 +38,7 @@ RenderWidget::RenderWidget( QWidget* parent )
   , _shaderProgram( new QOpenGLShaderProgram( this ) )
   , _modelViewMatrixLocation( -1 )
   , _projectionMatrixLocation( -1 )
-  , _lightDirection( {1,1,1} )
+  , _lightDirection( {0.58,0.58,0.58} )
   , _lightDirectionLocation( -1 )
   , _eye(    {10,2,-5} )
   , _centre( { 5,0, 0} )
@@ -54,6 +54,7 @@ void RenderWidget::initializeGL()
 {
   glClearColor( 0.25f, 0.25f, 0.25f, 1.f );
   glEnable( GL_DEPTH_TEST );
+  glEnable( GL_CULL_FACE );
 
   _shaderProgram->addShaderFromSourceCode( QOpenGLShader::Vertex, vertexShaderSource );
   _shaderProgram->addShaderFromSourceCode( QOpenGLShader::Fragment, fragmentShaderSource );
