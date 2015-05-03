@@ -50,12 +50,21 @@ RenderWidget::RenderWidget( QWidget* parent )
   , _projectionMatrixLocation( -1 )
   , _lightDirection( {1.0,1.0,1.0} )
   , _lightDirectionLocation( -1 )
-  , _eye(       { 0,0.5, 5} )
-  , _direction( { 0,0,-1} )
-  , _up(        { 0,1, 0} )
-  , _mouseX( 0 )
-  , _mouseY( 0 )
+  , _eye(       { 0  , 10.0, 1   } )
+  , _direction( { 0.8, -0.3, 0.45} )
+  , _up(        { 0  ,  1.0, 0   } )
+  , _mouseX( this->width() / 2 )
+  , _mouseY( this->height() / 2 )
 {
+  _direction.normalize();
+
+  {
+    QPoint globalPosition = mapToGlobal( QPoint( this->width()  / 2,
+                                                 this->height() / 2 ) );
+
+    QCursor::setPos( globalPosition );
+  }
+
   this->setCursor( Qt::BlankCursor );
   this->setFocusPolicy( Qt::StrongFocus );
   this->setMouseTracking( true );
@@ -107,6 +116,9 @@ void RenderWidget::paintGL()
                       _eye + _direction,
                       _up );
 
+  qDebug() << "Eye:       " << _eye;
+  qDebug() << "Direction: " << _direction;
+
   _shaderProgram->setUniformValue( _modelMatrixLocation,      _modelMatrix );
   _shaderProgram->setUniformValue( _viewMatrixLocation,       _viewMatrix );
   _shaderProgram->setUniformValue( _projectionMatrixLocation, _projectionMatrix );
@@ -156,23 +168,19 @@ void RenderWidget::keyPressEvent( QKeyEvent* event )
   switch( event->key() )
   {
   case Qt::Key_W:
-    qDebug() << "Forward";
     _eye    += speed*direction;
     this->update();
     break;
   case Qt::Key_S:
-    qDebug() << "Backward";
     _eye    -= speed*direction;
     this->update();
     break;
   case Qt::Key_A:
-    qDebug() << "Strafe left";
     _eye    -= speed*strafeDirection;
     this->update();
     break;
 
   case Qt::Key_D:
-    qDebug() << "Strafe right";
     _eye    += speed*strafeDirection;
     this->update();
     break;
