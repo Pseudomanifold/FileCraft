@@ -5,119 +5,6 @@
 
 #include <cmath>
 
-namespace
-{
-
-std::array<GLfloat,24*3> getSubChunkVertices( GLfloat x, GLfloat y, GLfloat z )
-{
-  std::array<GLfloat, 24*3> vertices
-    = {
-       {
-        x  , y  , z  , // front
-        x+1, y  , z  ,
-        x+1, y+1, z  ,
-        x  , y+1, z  ,
-        x,   y  , z-1, // back
-        x,   y+1, z-1,
-        x+1, y+1, z-1,
-        x+1, y  , z-1,
-        x,   y  , z  , // left
-        x,   y+1, z  ,
-        x,   y+1, z-1,
-        x,   y  , z-1,
-        x+1, y,   z  , // right
-        x+1, y,   z-1,
-        x+1, y+1, z-1,
-        x+1, y+1, z  ,
-        x,   y+1, z  , // top
-        x+1, y+1, z  ,
-        x+1, y+1, z-1,
-        x  , y+1, z-1,
-        x,   y,   z  , // bottom
-        x,   y,   z-1,
-        x+1, y,   z-1,
-        x+1, y,   z
-       }
-  };
-
-  return vertices;
-}
-
-std::array<GLfloat,24*3> getSubChunkNormals()
-{
-  std::array<GLfloat, 24*3> normals
-    = {
-       {
-         0, 0, 1, // front
-         0, 0, 1,
-         0, 0, 1,
-         0, 0, 1,
-         0, 0,-1, // back
-         0, 0,-1,
-         0, 0,-1,
-         0, 0,-1,
-        -1, 0, 0, // left
-        -1, 0, 0,
-        -1, 0, 0,
-        -1, 0, 0,
-         1, 0, 0, // right
-         1, 0, 0,
-         1, 0, 0,
-         1, 0, 0,
-         0, 1, 0, // top
-         0, 1, 0,
-         0, 1, 0,
-         0, 1, 0,
-         0,-1, 0, // bottom
-         0,-1, 0,
-         0,-1, 0,
-         0,-1, 0
-       }
-  };
-
-  return normals;
-}
-
-std::array<GLfloat,24*3> getSubChunkColours( unsigned int type )
-{
-  std::array<GLfloat, 24*3> colours;
-
-  GLfloat r = 0.f;
-  GLfloat g = 0.f;
-  GLfloat b = 0.f;
-
-  switch( type )
-  {
-  // green terrain
-  case 1:
-    r = 0.05f; g = 0.50f; b = 0.05f;
-    break;
-
-  // brown terrain
-  case 2:
-    r = 0.75f; g = 0.25f; b = 0.05f;
-    break;
-
-  // blue terrain
-  case 3:
-    r = 0.30f; g = 0.40f; b = 1.00f;
-
-  default:
-      break;
-  }
-
-  for( unsigned int i = 0; i < 24; i += 3 )
-  {
-    colours[i  ] = r;
-    colours[i+1] = g;
-    colours[i+2] = b;
-  }
-
-  return colours;
-}
-
-} // end of anonymous namespace
-
 Chunk::Chunk()
   : _updateRequired( true )
 {
@@ -178,6 +65,225 @@ bool Chunk::isOccupied( int x, int y, int z ) const
   return _data[x][y][z] != 0;
 }
 
+std::vector<GLfloat> Chunk::getSubChunkVertices( GLfloat x, GLfloat y, GLfloat z ) const
+{
+  std::vector<GLfloat> vertices;
+  vertices.reserve( 24*3 );
+
+  // Front
+  if( !isOccupied( x, y, z+1 ) )
+  {
+    std::array<GLfloat, 12> front = { {
+        x  , y  , z  ,
+        x+1, y  , z  ,
+        x+1, y+1, z  ,
+        x  , y+1, z
+    } };
+
+    vertices.insert( vertices.end(), front.begin(), front.end() );
+  }
+
+  // Back
+  if( !isOccupied( x, y, z-1 ) )
+  {
+    std::array<GLfloat, 12> back = { {
+        x,   y  , z-1,
+        x,   y+1, z-1,
+        x+1, y+1, z-1,
+        x+1, y  , z-1
+    } };
+
+    vertices.insert( vertices.end(), back.begin(), back.end() );
+  }
+
+  // Left
+  if( !isOccupied( x-1, y, z ) )
+  {
+    std::array<GLfloat, 12> left = { {
+        x,   y  , z  ,
+        x,   y+1, z  ,
+        x,   y+1, z-1,
+        x,   y  , z-1
+    } };
+
+    vertices.insert( vertices.end(), left.begin(), left.end() );
+  }
+
+  // Right
+  if( !isOccupied( x+1, y, z ) )
+  {
+    std::array<GLfloat, 12> right = { {
+         x+1, y,   z  ,
+        x+1, y,   z-1,
+        x+1, y+1, z-1,
+        x+1, y+1, z
+    } };
+
+    vertices.insert( vertices.end(), right.begin(), right.end() );
+  }
+
+  // Top
+  if( !isOccupied( x, y+1, z ) )
+  {
+    std::array<GLfloat, 12> top = { {
+        x,   y+1, z  ,
+        x+1, y+1, z  ,
+        x+1, y+1, z-1,
+        x  , y+1, z-1
+    } };
+
+    vertices.insert( vertices.end(), top.begin(), top.end() );
+  }
+
+  // Bottom
+  if( !isOccupied( x, y-1, z ) )
+  {
+    std::array<GLfloat, 12> bottom = { {
+        x,   y,   z  , // bottom
+        x,   y,   z-1,
+        x+1, y,   z-1,
+        x+1, y,   z
+    } };
+
+    vertices.insert( vertices.end(), bottom.begin(), bottom.end() );
+  }
+
+  return vertices;
+}
+
+std::vector<GLfloat> Chunk::getSubChunkNormals( unsigned int x, unsigned int y, unsigned int z ) const
+{
+  std::vector<GLfloat> normals;
+  normals.reserve( 24*3 );
+
+  // Front
+  if( !isOccupied( x, y, z+1 ) )
+  {
+    std::array<GLfloat,12> front = { {
+         0, 0, 1,
+         0, 0, 1,
+         0, 0, 1,
+         0, 0, 1
+    } };
+
+    normals.insert( normals.end(), front.begin(), front.end() );
+  }
+
+  // Back
+  if( !isOccupied( x, y, z-1 ) )
+  {
+    std::array<GLfloat,12> back = { {
+         0, 0, -1,
+         0, 0, -1,
+         0, 0, -1,
+         0, 0, -1
+    } };
+
+    normals.insert( normals.end(), back.begin(), back.end() );
+  }
+
+  // Left
+  if( !isOccupied( x-1, y, z ) )
+  {
+    std::array<GLfloat,12> left = { {
+        -1, 0, 0,
+        -1, 0, 0,
+        -1, 0, 0,
+        -1, 0, 0
+    } };
+
+    normals.insert( normals.end(), left.begin(), left.end() );
+  }
+
+  // Right
+  if( !isOccupied( x+1, y, z ) )
+  {
+    std::array<GLfloat,12> right = { {
+        -1, 0, 0,
+        -1, 0, 0,
+        -1, 0, 0,
+        -1, 0, 0
+    } };
+
+    normals.insert( normals.end(), right.begin(), right.end() );
+  }
+
+  // Top
+  if( !isOccupied( x, y+1, z ) )
+  {
+    std::array<GLfloat,12> top = { {
+         0, 1, 0,
+         0, 1, 0,
+         0, 1, 0,
+         0, 1, 0
+    } };
+
+    normals.insert( normals.end(), top.begin(), top.end() );
+  }
+
+  // Bottom
+  if( !isOccupied( x, y-1, z ) )
+  {
+    std::array<GLfloat,12> bottom = { {
+         0, 1, 0,
+         0, 1, 0,
+         0, 1, 0,
+         0, 1, 0
+    } };
+
+    normals.insert( normals.end(), bottom.begin(), bottom.end() );
+  }
+
+  return normals;
+}
+
+std::vector<GLfloat> Chunk::getSubChunkColours( unsigned int x, unsigned int y, unsigned int z ) const
+{
+  std::vector<GLfloat> colours;
+  colours.reserve( 24*3 );
+
+  GLfloat r = 0.f;
+  GLfloat g = 0.f;
+  GLfloat b = 0.f;
+
+  switch( this->operator()(x,y,z) )
+  {
+  // green terrain
+  case 1:
+    r = 0.05f; g = 0.50f; b = 0.05f;
+    break;
+
+  // brown terrain
+  case 2:
+    r = 0.75f; g = 0.25f; b = 0.05f;
+    break;
+
+  // blue terrain
+  case 3:
+    r = 0.30f; g = 0.40f; b = 1.00f;
+
+  default:
+      break;
+  }
+
+  unsigned int numEmptyFaces =   !isOccupied(x,   y  , z-1)
+                               + !isOccupied(x,   y  , z+1)
+                               + !isOccupied(x-1, y  , z  )
+                               + !isOccupied(x+1, y  , z  )
+                               + !isOccupied(x  , y+1, z  )
+                               + !isOccupied(x  , y-1, z  );
+
+  for( unsigned int i = 0; i < numEmptyFaces*4; i++ )
+  {
+    colours.push_back(r);
+    colours.push_back(g);
+    colours.push_back(b);
+  }
+
+  return colours;
+}
+
+
 void Chunk::update() const
 {
   _vertices.clear();
@@ -202,12 +308,12 @@ void Chunk::update() const
           _vertices.insert( std::end( _vertices ),
                             std::begin( subChunkVertices ), std::end( subChunkVertices ) );
 
-          auto&& subChunkNormals = getSubChunkNormals();
+          auto&& subChunkNormals = getSubChunkNormals( x, y, z );
 
           _normals.insert( std::end( _normals ),
                            std::begin( subChunkNormals ), std::end( subChunkNormals ) );
 
-          auto&& subChunkColours = getSubChunkColours( _data[x][y][z] );
+          auto&& subChunkColours = getSubChunkColours( x, y, z );
 
           _colours.insert( std::end( _colours ),
                            std::begin( subChunkColours ), std::end( subChunkColours ) );

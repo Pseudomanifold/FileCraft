@@ -27,13 +27,18 @@ public:
 private:
   data_type _data[xNum][yNum][zNum];
 
+  bool isOccupied( int x, int y, int z ) const;
+
+  std::vector<GLfloat> getSubChunkVertices( GLfloat x, GLfloat y, GLfloat z ) const;
+  std::vector<GLfloat> getSubChunkNormals(  unsigned int x, unsigned int y, unsigned int z ) const;
+  std::vector<GLfloat> getSubChunkColours(  unsigned int x, unsigned int y, unsigned int z ) const;
+
   mutable bool _updateRequired;
 
   mutable std::vector<GLfloat> _vertices;
   mutable std::vector<GLfloat> _normals;
   mutable std::vector<GLfloat> _colours;
 
-  bool isOccupied( int x, int y, int z ) const;
   void update() const;
 };
 
