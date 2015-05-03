@@ -1,6 +1,8 @@
 #include "Chunk.hh"
+#include "SimplexNoise.hh"
 
 #include <array>
+#include <cmath>
 
 namespace
 {
@@ -81,20 +83,18 @@ std::array<GLfloat,24*3> getSubChunkNormals()
 Chunk::Chunk()
 {
   for( data_type x = 0; x < xNum; x++ )
+  {
     for( data_type y = 0; y < yNum; y++ )
+    {
       for( data_type z = 0; z < zNum; z++ )
-        _data[x][y][z] = 0;
-
-  // Not exactly random...
-  _data[0][0][0] = 1;
-  _data[1][0][0] = 1;
-  _data[2][0][0] = 1;
-  _data[0][0][3] = 2;
-  _data[0][1][3] = 2;
-  _data[0][2][3] = 2;
-  _data[1][0][4] = 3;
-  _data[2][0][4] = 3;
-  _data[3][0][4] = 3;
+      {
+        if( std::abs( simplexNoise( 1, x, y, z ) ) > 0.2f )
+          _data[x][y][z] = 1;
+        else
+          _data[x][y][z] = 0;
+      }
+    }
+  }
 }
 
 std::vector<GLfloat> Chunk::vertices() const
