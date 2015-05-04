@@ -14,6 +14,7 @@ FIND_PACKAGE( OpenGL )
 
 SET( SOURCES
   Chunk.cc
+  Entity.cc
   FileCraft.cc
   MainWindow.cc
   RenderWidget.cc
