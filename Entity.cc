@@ -1,5 +1,12 @@
 #include "Entity.hh"
 
+Entity::Entity()
+  : _x( 0.f )
+  , _y( 0.f )
+  , _z( 0.f )
+{
+}
+
 Entity::~Entity()
 {
 }
