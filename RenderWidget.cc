@@ -56,6 +56,7 @@ RenderWidget::RenderWidget( QWidget* parent )
   , _up(        { 0  ,  1.0, 0   } )
   , _mouseX( this->width() / 2 )
   , _mouseY( this->height() / 2 )
+  , _renderer( _shaderProgram )
 {
   _direction.normalize();
 
@@ -153,36 +154,10 @@ void RenderWidget::paintGL()
     }
   }
 
-  // FIXME: The tetrahedron is not being drawn properly, but I just want to
-  // test whether it works.
-  glDisable( GL_CULL_FACE );
-
   Tetrahedron tet;
   tet.setX( 5.f ); tet.setY( 10.f ); tet.setZ( 5.f );
 
-  _modelMatrix.setToIdentity();
-  _modelMatrix.translate( tet.x(), tet.y(), tet.z() );
-  _shaderProgram->setUniformValue( _modelMatrixLocation, _modelMatrix );
-
-  auto&& vertices = tet.vertices();
-  auto&& normals  = tet.normals();
-  auto&& colours  = tet.colours();
-
-  _shaderProgram->setAttributeArray( 0, GL_FLOAT, vertices.data(), 3 );
-  _shaderProgram->setAttributeArray( 1, GL_FLOAT, normals.data(),  3 );
-  _shaderProgram->setAttributeArray( 2, GL_FLOAT, colours.data(),  3 );
-
-  _shaderProgram->enableAttributeArray( 0 );
-  _shaderProgram->enableAttributeArray( 1 );
-  _shaderProgram->enableAttributeArray( 2 );
-
-  glDrawArrays( GL_TRIANGLES, 0, vertices.size() / 3 );
-
-  _shaderProgram->disableAttributeArray( 2 );
-  _shaderProgram->disableAttributeArray( 1 );
-  _shaderProgram->disableAttributeArray( 0 );
-
-  glEnable( GL_CULL_FACE );
+  _renderer.render( tet );
 }
 
 void RenderWidget::resizeGL( int w, int h )

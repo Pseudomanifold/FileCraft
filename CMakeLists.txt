@@ -17,6 +17,7 @@ SET( SOURCES
   Entity.cc
   FileCraft.cc
   MainWindow.cc
+  Renderer.cc
   RenderWidget.cc
   SimplexNoise.cc
   TerrainGenerator.cc
