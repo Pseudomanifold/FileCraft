@@ -26,8 +26,6 @@ void Renderer::render( const Entity& entity )
   auto&& normals  = entity.normals();
   auto&& colours  = entity.colours();
 
-  qDebug() << vertices.size() << normals.size() << colours.size();
-
   _shaderProgram->setAttributeArray( 0, GL_FLOAT, vertices.data(), 3 );
   _shaderProgram->setAttributeArray( 1, GL_FLOAT, normals.data(),  3 );
   _shaderProgram->setAttributeArray( 2, GL_FLOAT, colours.data(),  3 );

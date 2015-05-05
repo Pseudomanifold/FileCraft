@@ -186,11 +186,11 @@ void RenderWidget::keyPressEvent( QKeyEvent* event )
     _eye    -= speed*strafeDirection;
     this->update();
     break;
-
   case Qt::Key_D:
     _eye    += speed*strafeDirection;
     this->update();
     break;
+
   default:
     break;
   }
