@@ -2,7 +2,6 @@
 
 #include "Octahedron.hh"
 #include "TerrainGenerator.hh"
-#include "Tetrahedron.hh"
 
 #include <cmath>
 

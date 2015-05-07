@@ -22,7 +22,6 @@ SET( SOURCES
   RenderWidget.cc
   SimplexNoise.cc
   TerrainGenerator.cc
-  Tetrahedron.cc
 )
 
 ADD_EXECUTABLE( filecraft ${SOURCES} )
