@@ -199,9 +199,9 @@ void RenderWidget::keyPressEvent( QKeyEvent* event )
   // FIXME: Check the player's position. This should become a method in a
   // "World" class or somewhere else.
 
-  int x = static_cast<int>( _eye.x() );
-  int y = static_cast<int>( _eye.y() );
-  int z = static_cast<int>( _eye.z() );
+  int x = static_cast<int>( std::floor( _eye.x() ) );
+  int y = static_cast<int>( std::floor( _eye.y() ) );
+  int z = static_cast<int>( std::floor( _eye.z() + 1.f ) );
 
   if( x >= 0 && x < 10*Chunk::xNum && z >= 0 && z < 10*Chunk::zNum )
   {
