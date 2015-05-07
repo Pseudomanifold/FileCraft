@@ -172,6 +172,7 @@ void RenderWidget::keyPressEvent( QKeyEvent* event )
   auto direction       = _direction;
   auto strafeDirection = QVector3D::crossProduct( direction, _up );
   auto speed           = 0.1f;
+  auto previousEye     = _eye;
 
   switch( event->key() )
   {
@@ -218,7 +219,10 @@ void RenderWidget::keyPressEvent( QKeyEvent* event )
     qDebug() << "Local chunk position:" << xLocal << "," << yLocal << "," << zLocal;
 
     if( _chunks[xChunk][yChunk].isOccupied( xLocal, yLocal, zLocal ) )
+    {
       qDebug() << "Occupado, desperado!";
+      _eye = previousEye;
+    }
   }
 }
 
