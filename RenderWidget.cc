@@ -1,4 +1,6 @@
 #include "RenderWidget.hh"
+
+#include "Octahedron.hh"
 #include "TerrainGenerator.hh"
 #include "Tetrahedron.hh"
 
@@ -154,10 +156,10 @@ void RenderWidget::paintGL()
     }
   }
 
-  Tetrahedron tet;
-  tet.setX( 5.f ); tet.setY( 10.f ); tet.setZ( 5.f );
+  Octahedron oct;
+  oct.setX( 5.f ); oct.setY( 10.f ); oct.setZ( 5.f );
 
-  _renderer.render( tet );
+  _renderer.render( oct );
 }
 
 void RenderWidget::resizeGL( int w, int h )

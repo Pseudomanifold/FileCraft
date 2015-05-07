@@ -14,10 +14,6 @@ void Renderer::render( const Entity& entity )
   // burden lie on the renderer?
   _modelMatrixLocation = _shaderProgram->uniformLocation( "modelMatrix" );
 
-  // FIXME: The tetrahedron is not being drawn properly, but I just want to
-  // test whether it works.
-  glDisable( GL_CULL_FACE );
-
   _modelMatrix.setToIdentity();
   _modelMatrix.translate( entity.x(), entity.y(), entity.z() );
   _shaderProgram->setUniformValue( _modelMatrixLocation, _modelMatrix );
@@ -39,6 +35,4 @@ void Renderer::render( const Entity& entity )
   _shaderProgram->disableAttributeArray( 2 );
   _shaderProgram->disableAttributeArray( 1 );
   _shaderProgram->disableAttributeArray( 0 );
-
-  glEnable( GL_CULL_FACE );
 }
