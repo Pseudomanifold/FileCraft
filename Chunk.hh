@@ -24,10 +24,10 @@ public:
   const std::vector<GLfloat>& normals()  const;
   const std::vector<GLfloat>& colours()  const;
 
+  bool isOccupied( int x, int y, int z ) const;
+
 private:
   data_type _data[xNum][yNum][zNum];
-
-  bool isOccupied( int x, int y, int z ) const;
 
   std::vector<GLfloat> getSubChunkVertices( GLfloat x, GLfloat y, GLfloat z ) const;
   std::vector<GLfloat> getSubChunkNormals(  unsigned int x, unsigned int y, unsigned int z ) const;

@@ -195,6 +195,31 @@ void RenderWidget::keyPressEvent( QKeyEvent* event )
   default:
     break;
   }
+
+  // FIXME: Check the player's position. This should become a method in a
+  // "World" class or somewhere else.
+
+  int x = static_cast<int>( _eye.x() );
+  int y = static_cast<int>( _eye.y() );
+  int z = static_cast<int>( _eye.z() );
+
+  if( x >= 0 && x < 10*Chunk::xNum && z >= 0 && z < 10*Chunk::zNum )
+  {
+    // Global chunk that is next to our position
+    int xChunk = x / Chunk::xNum;
+    int yChunk = z / Chunk::zNum;
+
+    // Translate coordinates into local chunk system
+    int xLocal = x - xChunk * Chunk::xNum;
+    int yLocal = y;
+    int zLocal = z - yChunk * Chunk::zNum;
+
+    qDebug() << "Global chunk        :" << xChunk << yChunk;
+    qDebug() << "Local chunk position:" << xLocal << "," << yLocal << "," << zLocal;
+
+    if( _chunks[xChunk][yChunk].isOccupied( xLocal, yLocal, zLocal ) )
+      qDebug() << "Occupado, desperado!";
+  }
 }
 
 void RenderWidget::mouseMoveEvent( QMouseEvent* event )

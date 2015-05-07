@@ -113,7 +113,7 @@ std::vector<GLfloat> Chunk::getSubChunkVertices( GLfloat x, GLfloat y, GLfloat z
   if( !isOccupied( x+1, y, z ) )
   {
     std::array<GLfloat, 12> right = { {
-         x+1, y,   z  ,
+        x+1, y,   z  ,
         x+1, y,   z-1,
         x+1, y+1, z-1,
         x+1, y+1, z
