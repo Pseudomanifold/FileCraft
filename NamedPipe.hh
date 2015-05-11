@@ -9,6 +9,8 @@ public:
   NamedPipe( const std::string& name );
   ~NamedPipe();
 
+  std::string read();
+
 private:
   int _fileDescriptor;
 };

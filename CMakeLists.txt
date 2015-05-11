@@ -17,6 +17,7 @@ SET( SOURCES
   Entity.cc
   FileCraft.cc
   MainWindow.cc
+  NamedPipe.cc
   Octahedron.cc
   Renderer.cc
   RenderWidget.cc
