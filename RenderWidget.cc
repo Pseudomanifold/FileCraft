@@ -197,33 +197,8 @@ void RenderWidget::keyPressEvent( QKeyEvent* event )
     break;
   }
 
-  // FIXME: Check the player's position. This should become a method in a
-  // "World" class or somewhere else.
-
-  int x = static_cast<int>( std::floor( _eye.x() ) );
-  int y = static_cast<int>( std::floor( _eye.y() ) );
-  int z = static_cast<int>( std::floor( _eye.z() + 1.f ) );
-
-  if( x >= 0 && x < 10*Chunk::xNum && z >= 0 && z < 10*Chunk::zNum )
-  {
-    // Global chunk that is next to our position
-    int xChunk = x / Chunk::xNum;
-    int yChunk = z / Chunk::zNum;
-
-    // Translate coordinates into local chunk system
-    int xLocal = x - xChunk * Chunk::xNum;
-    int yLocal = y;
-    int zLocal = z - yChunk * Chunk::zNum;
-
-    qDebug() << "Global chunk        :" << xChunk << yChunk;
-    qDebug() << "Local chunk position:" << xLocal << "," << yLocal << "," << zLocal;
-
-    if( _chunks[xChunk][yChunk].isOccupied( xLocal, yLocal, zLocal ) )
-    {
-      qDebug() << "Occupado, desperado!";
-      _eye = previousEye;
-    }
-  }
+  if( isCollision( _eye ) )
+    _eye = previousEye;
 }
 
 void RenderWidget::mouseMoveEvent( QMouseEvent* event )
@@ -259,4 +234,34 @@ void RenderWidget::mouseMoveEvent( QMouseEvent* event )
                                                this->height() / 2 ) );
 
   QCursor::setPos( globalPosition );
+}
+
+bool RenderWidget::isCollision( const QVector3D& position )
+{
+  // FIXME: Check the player's position. This should become a method in a
+  // "World" class or somewhere else.
+
+  int x = static_cast<int>( std::floor( position.x() ) );
+  int y = static_cast<int>( std::floor( position.y() ) );
+  int z = static_cast<int>( std::floor( position.z() + 1.f ) );
+
+  if( x >= 0 && x < 10*Chunk::xNum && z >= 0 && z < 10*Chunk::zNum )
+  {
+    // Global chunk that is next to our position
+    int xChunk = x / Chunk::xNum;
+    int yChunk = z / Chunk::zNum;
+
+    // Translate coordinates into local chunk system
+    int xLocal = x - xChunk * Chunk::xNum;
+    int yLocal = y;
+    int zLocal = z - yChunk * Chunk::zNum;
+
+    qDebug() << "Global chunk        :" << xChunk << yChunk;
+    qDebug() << "Local chunk position:" << xLocal << "," << yLocal << "," << zLocal;
+
+    if( _chunks[xChunk][yChunk].isOccupied( xLocal, yLocal, zLocal ) )
+      return true;
+  }
+
+  return false;
 }

@@ -25,6 +25,8 @@ private:
   virtual void keyPressEvent( QKeyEvent* event );
   virtual void mouseMoveEvent( QMouseEvent* event );
 
+  bool isCollision( const QVector3D& position );
+
   QOpenGLShaderProgram* _shaderProgram;
 
   QMatrix4x4 _modelMatrix;
