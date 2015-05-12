@@ -197,8 +197,22 @@ void RenderWidget::keyPressEvent( QKeyEvent* event )
     break;
   }
 
-  if( isCollision( _eye ) )
-    _eye = previousEye;
+  auto xEye = previousEye;
+  auto yEye = previousEye;
+  auto zEye = previousEye;
+
+  xEye.setX( _eye.x() );
+  yEye.setY( _eye.y() );
+  zEye.setZ( _eye.z() );
+
+  if( isCollision( xEye ) )
+    _eye.setX(  previousEye.x() );
+
+  if( isCollision( yEye ) )
+    _eye.setY( previousEye.y() );
+
+  if( isCollision( zEye ) )
+    _eye.setZ( previousEye.z() );
 }
 
 void RenderWidget::mouseMoveEvent( QMouseEvent* event )
