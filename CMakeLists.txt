@@ -13,6 +13,7 @@ FIND_PACKAGE( Qt5OpenGL )
 FIND_PACKAGE( OpenGL )
 
 SET( SOURCES
+  BoundingBox.cc
   Chunk.cc
   Entity.cc
   FileCraft.cc
