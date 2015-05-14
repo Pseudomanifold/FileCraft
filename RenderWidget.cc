@@ -1,5 +1,6 @@
 #include "RenderWidget.hh"
 
+#include "BoundingBox.hh"
 #include "Octahedron.hh"
 #include "TerrainGenerator.hh"
 
@@ -157,6 +158,14 @@ void RenderWidget::paintGL()
 
   Octahedron oct;
   oct.setX( 5.f ); oct.setY( 10.f ); oct.setZ( 5.f );
+
+  BoundingBox bb1( 4, 6, 9, 11, 4, 6 );
+  BoundingBox bb2( _eye.x() - 0.5*1.41, _eye.x() + 0.5*1.41,
+                   _eye.y() - 0.5*1.41, _eye.y() + 0.5*1.41,
+                   _eye.z() - 0.5*1.41, _eye.z() + 0.5*1.41 );
+
+  if( bb1.intersects( bb2 ) )
+    qDebug() << "Intersection with octahedron";
 
   _renderer.render( oct );
 }
