@@ -55,7 +55,7 @@ Chunk makeRandom()
   return chunk;
 }
 
-Chunk makeRandomWithSimplexNoise()
+Chunk makeRandomWithSimplexNoise( float xStart, float yStart, float zStart )
 {
   Chunk chunk;
 
@@ -65,15 +65,15 @@ Chunk makeRandomWithSimplexNoise()
 
   for( decltype(xDim) x = 0; x < xDim; x++ )
     for( decltype(yDim) y = 0; y < yDim; y++ )
-      for( decltype(zDim) z = y; z < zDim; z++ )
-        chunk(x,y,z) = simplexNoise( 1, x,y,z ) > 0.3 ? 1 : 0;
+      for( decltype(zDim) z = 0; z < zDim; z++ )
+        chunk(x,y,z) = simplexNoise( 1, xStart+x,yStart+y,zStart+z ) > 0.2 ? 1 : 0;
 
   std::mt19937 rng( rd() );
   std::uniform_int_distribution<unsigned int> distribution( 1, 3);
 
   for( decltype(xDim) x = 0; x < xDim; x++ )
     for( decltype(yDim) y = 0; y < yDim; y++ )
-      for( decltype(zDim) z = y; z < zDim; z++ )
+      for( decltype(zDim) z = 0; z < zDim; z++ )
         if( chunk(x,y,z) != 0 )
           chunk(x,y,z) = distribution( rng );
 

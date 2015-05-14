@@ -7,6 +7,6 @@ Chunk makePeak();
 Chunk makePeaks( unsigned int numPeaks = 0 );
 
 Chunk makeRandom();
-Chunk makeRandomWithSimplexNoise();
+Chunk makeRandomWithSimplexNoise( float xStart = 0.f, float yStart = 0.f, float zStart = 0.f );
 
 #endif

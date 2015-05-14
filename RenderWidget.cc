@@ -80,7 +80,7 @@ RenderWidget::RenderWidget( QWidget* parent )
       if( i == 0 || j == 0 || i == 9 || j == 9 )
         _chunks[i][j] = makePeak();
       else
-        _chunks[i][j] = makeRandomWithSimplexNoise();
+      _chunks[i][j] = makeRandomWithSimplexNoise(i*10.f*Chunk::xNum, 0.f, j*10.f*Chunk::zNum);
     }
   }
 }
