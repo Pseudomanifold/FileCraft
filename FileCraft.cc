@@ -1,4 +1,6 @@
 #include <QApplication>
+#include <QThread>
+#include <QTime>
 
 #include "MainWindow.hh"
 
@@ -12,5 +14,16 @@ int main( int argc, char** argv )
   mainWindow.setWindowTitle( application.applicationName() );
   mainWindow.show();
 
-  return application.exec();
+  while( !application.closingDown() )
+  {
+    auto start = QTime::currentTime();
+
+    application.processEvents();
+
+    auto end   = QTime::currentTime();
+
+    QThread::msleep( 15 + start.msecsTo( end ) );
+  }
+
+  return 0;
 }
