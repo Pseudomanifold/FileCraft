@@ -183,23 +183,21 @@ void RenderWidget::keyPressEvent( QKeyEvent* event )
   auto speed           = 0.1f;
   auto previousEye     = _eye;
 
+  QVector3D deltaDirection;
+
   switch( event->key() )
   {
   case Qt::Key_W:
-    _eye    += speed*direction;
-    this->update();
+    deltaDirection =  direction;
     break;
   case Qt::Key_S:
-    _eye    -= speed*direction;
-    this->update();
+    deltaDirection = -direction;;
     break;
   case Qt::Key_A:
-    _eye    -= speed*strafeDirection;
-    this->update();
+    deltaDirection = -strafeDirection;
     break;
   case Qt::Key_D:
-    _eye    += speed*strafeDirection;
-    this->update();
+    deltaDirection =  strafeDirection;
     break;
 
   default:
@@ -210,9 +208,13 @@ void RenderWidget::keyPressEvent( QKeyEvent* event )
   auto yEye = previousEye;
   auto zEye = previousEye;
 
-  xEye.setX( _eye.x() );
-  yEye.setY( _eye.y() );
-  zEye.setZ( _eye.z() );
+  auto testPosition = _eye + 3 * speed * deltaDirection;
+
+  xEye.setX( testPosition.x() );
+  yEye.setY( testPosition.y() );
+  zEye.setZ( testPosition.z() );
+
+  _eye += speed * deltaDirection;
 
   if( isCollision( xEye ) )
     _eye.setX(  previousEye.x() );
@@ -222,6 +224,8 @@ void RenderWidget::keyPressEvent( QKeyEvent* event )
 
   if( isCollision( zEye ) )
     _eye.setZ( previousEye.z() );
+
+  this->update();
 }
 
 void RenderWidget::mouseMoveEvent( QMouseEvent* event )
