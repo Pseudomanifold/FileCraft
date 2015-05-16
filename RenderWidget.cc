@@ -238,6 +238,8 @@ void RenderWidget::keyPressEvent( QKeyEvent* event )
   if( isCollision( zEye ) )
     _eye.setZ( previousEye.z() );
 
+  _renderer->setEye( _eye );
+
   this->update();
 }
 
@@ -267,6 +269,8 @@ void RenderWidget::mouseMoveEvent( QMouseEvent* event )
 
   _mouseX = this->width() / 2;
   _mouseY = this->height() / 2;
+
+  _renderer->setDirection( _direction );
 
   this->update();
 

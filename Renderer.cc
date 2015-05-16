@@ -137,3 +137,12 @@ void Renderer::setProjectionMatrix( const QMatrix4x4& matrix )
 {
   _projectionMatrix = matrix;
 }
+void Renderer::setEye( const QVector3D& eye )
+{
+  _eye = eye;
+}
+
+void Renderer::setDirection( const QVector3D& direction )
+{
+  _direction = direction;
+}

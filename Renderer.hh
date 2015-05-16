@@ -19,6 +19,9 @@ public:
 
   void setProjectionMatrix( const QMatrix4x4& matrix );
 
+  void setEye( const QVector3D& eye );
+  void setDirection( const QVector3D& direction );
+
 private:
   QOpenGLShaderProgram* _shaderProgram;
 
