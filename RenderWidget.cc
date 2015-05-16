@@ -58,7 +58,6 @@ RenderWidget::RenderWidget( QWidget* parent )
   , _up(        { 0  ,  1.0, 0   } )
   , _mouseX( this->width() / 2 )
   , _mouseY( this->height() / 2 )
-  , _renderer( _shaderProgram )
 {
   _direction.normalize();
 
@@ -87,7 +86,8 @@ RenderWidget::RenderWidget( QWidget* parent )
 
 void RenderWidget::initializeGL()
 {
-  glClearColor( 0.25f, 0.25f, 0.25f, 1.f );
+#if 0
+  glClearColor( 1.f, 1.f, 1.f, 1.f );
   glEnable( GL_DEPTH_TEST );
   glEnable( GL_CULL_FACE );
 
@@ -109,10 +109,16 @@ void RenderWidget::initializeGL()
   _shaderProgram->setUniformValue( _lightDirectionLocation, _lightDirection );
 
   qDebug() << _shaderProgram->log();
+#endif
+
+  _renderer = new Renderer( _shaderProgram );
 }
 
 void RenderWidget::paintGL()
 {
+  _renderer->clear();
+
+#if 0
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
   _viewMatrix.setToIdentity();
@@ -121,7 +127,7 @@ void RenderWidget::paintGL()
                       _up );
 
   qDebug() << "Eye:       " << _eye;
-  qDebug() << "Direction: " << _direction;
+  //qDebug() << "Direction: " << _direction;
 
   _shaderProgram->setUniformValue( _modelMatrixLocation,      _modelMatrix );
   _shaderProgram->setUniformValue( _viewMatrixLocation,       _viewMatrix );
@@ -155,6 +161,11 @@ void RenderWidget::paintGL()
       _shaderProgram->disableAttributeArray( 0 );
     }
   }
+#endif
+
+  for( int i = 0; i < 10; i++ )
+    for( int j = 0; j < 10; j++ )
+      _renderer->render( _chunks[i][j], i * Chunk::xNum, 0.f, j * Chunk::zNum );
 
   Octahedron oct;
   oct.setX( 5.f ); oct.setY( 10.f ); oct.setZ( 5.f );
@@ -167,13 +178,15 @@ void RenderWidget::paintGL()
   if( bb1.intersects( bb2 ) )
     qDebug() << "Intersection with octahedron";
 
-  _renderer.render( oct );
+  _renderer->render( oct );
 }
 
 void RenderWidget::resizeGL( int w, int h )
 {
   _projectionMatrix.setToIdentity();
   _projectionMatrix.perspective( 45.f, static_cast<GLfloat>( w ) / h, 0.01f, 1000.f );
+
+  _renderer->setProjectionMatrix( _projectionMatrix );
 }
 
 void RenderWidget::keyPressEvent( QKeyEvent* event )

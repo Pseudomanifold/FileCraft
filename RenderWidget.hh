@@ -50,7 +50,7 @@ private:
   // FIXME: The renderer is by far not stand-alone or anything. It requires
   // some internal and external setup. Still, it simplifies rendering single
   // entities.
-  Renderer _renderer;
+  Renderer* _renderer;
 
   // FIXME: This is not the right place to manage a world of chunks, but at
   // least I can pretend to have a working level implementation that way...
