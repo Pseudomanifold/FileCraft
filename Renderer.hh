@@ -2,6 +2,8 @@
 #define FILECRAFT_RENDERER_HH
 
 #include <QMatrix4x4>
+#include <QVector3D>
+
 #include <QOpenGLShaderProgram>
 
 class Chunk;
@@ -19,8 +21,13 @@ public:
 
   void setProjectionMatrix( const QMatrix4x4& matrix );
 
+  QVector3D eye() const;
   void setEye( const QVector3D& eye );
+
+  QVector3D direction() const;
   void setDirection( const QVector3D& direction );
+
+  QVector3D up() const;
 
 private:
   QOpenGLShaderProgram* _shaderProgram;

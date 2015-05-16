@@ -1,14 +1,12 @@
 #ifndef FILECRAFT_RENDER_WIDGET_HH
 #define FILECRAFT_RENDER_WIDGET_HH
 
-#include <QMatrix4x4>
-#include <QVector3D>
-
 #include <QOpenGLShaderProgram>
 #include <QOpenGLWidget>
 
 #include "Chunk.hh"
-#include "Renderer.hh"
+
+class Renderer;
 
 class RenderWidget : public QOpenGLWidget
 {
@@ -28,21 +26,6 @@ private:
   bool isCollision( const QVector3D& position );
 
   QOpenGLShaderProgram* _shaderProgram;
-
-  QMatrix4x4 _modelMatrix;
-  QMatrix4x4 _viewMatrix;
-  QMatrix4x4 _projectionMatrix;
-
-  int _modelMatrixLocation;
-  int _viewMatrixLocation;
-  int _projectionMatrixLocation;
-
-  QVector3D _lightDirection;
-  int _lightDirectionLocation;
-
-  QVector3D _eye;
-  QVector3D _direction;
-  QVector3D _up;
 
   int _mouseX;
   int _mouseY;

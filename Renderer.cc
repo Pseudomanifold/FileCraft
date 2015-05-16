@@ -142,7 +142,22 @@ void Renderer::setEye( const QVector3D& eye )
   _eye = eye;
 }
 
+QVector3D Renderer::eye() const
+{
+  return _eye;
+}
+
 void Renderer::setDirection( const QVector3D& direction )
 {
   _direction = direction;
+}
+
+QVector3D Renderer::direction() const
+{
+  return _direction;
+}
+
+QVector3D Renderer::up() const
+{
+  return _up;
 }
